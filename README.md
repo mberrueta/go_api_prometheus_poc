@@ -15,3 +15,7 @@ TBD
 
 - a
 - b
+
+## Daily journal
+
+- go get -u github.com/golang/dep/cmd/dep
