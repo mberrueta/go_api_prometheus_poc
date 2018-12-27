@@ -1,0 +1,27 @@
+version: '2'
+# services:
+#   postgresql:
+#     image: 'bitnami/postgresql:9.6'
+#     ports:
+#       - '5432:5432'
+#     volumes:
+#       - ./dbdata:/bitnami
+networks:
+  app-tier:
+    driver: bridge
+# # version: "2"
+services:
+  db:
+    image: postgres:9.6.3
+    volumes:
+      - ./postgresql.conf:/etc/postgresql.conf
+    ports:
+      - "5432:5432"
+    command: postgres -c config_file=/etc/postgresql.conf
+  prometheus:
+    image: quay.io/prometheus/prometheus:v2.0.0
+    volumes:
+     - ./monitor/prometheus.yml:/etc/prometheus/prometheus.yml
+    command: "--config.file=/etc/prometheus/prometheus.yml --storage.tsdb.path=/prometheus"
+    ports:
+     - 9090:9090
