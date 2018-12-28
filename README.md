@@ -19,3 +19,5 @@ TBD
 ## Daily journal
 
 - go get -u github.com/golang/dep/cmd/dep
+- added http://www.gorillatoolkit.org/ mux using dep
+- added book controller & model
