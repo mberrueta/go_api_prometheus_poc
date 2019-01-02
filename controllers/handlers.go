@@ -7,10 +7,11 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/mberrueta/go_api_prometheus_poc/models"
+	"github.com/mberrueta/go_api_prometheus_poc/services"
 )
 
 func BooksIndex(w http.ResponseWriter, r *http.Request) {
-	list, err := models.GetBooks()
+	list, err := services.GetBooks()
 
 	render(w, list, err)
 }
@@ -24,7 +25,7 @@ func BooksShow(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("422: " + err.Error() + http.StatusText(422)))
 	}
 
-	book, err := models.GetBook(uint16(id))
+	book, err := services.GetBook(uint16(id))
 
 	render(w, book, err)
 }
@@ -36,43 +37,35 @@ func BooksCreate(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("422: " + err.Error() + http.StatusText(422)))
 	}
 
-	models.CreateBook(*book)
+	services.CreateBook(*book)
 }
 
 func BooksDelete(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	sId := params["id"]
 	id, err := strconv.ParseUint(sId, 10, 16)
-
 	if err != nil {
 		w.Write([]byte("422: " + err.Error() + http.StatusText(422)))
 	}
 
-	book, err := models.GetBook(uint16(id))
-
+	err = services.Delete(uint16(id))
 	if err != nil {
 		w.Write([]byte("422: " + err.Error() + http.StatusText(422)))
 	}
-
-	book.Delete()
 }
 
 func BooksUpdate(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	sId := params["id"]
 	id, err := strconv.ParseUint(sId, 10, 16)
-
 	if err != nil {
 		w.Write([]byte("422: " + err.Error() + http.StatusText(422)))
 	}
 
-	book, err := models.GetBook(uint16(id))
-
+	err = services.Update(uint16(id), params)
 	if err != nil {
 		w.Write([]byte("422: " + err.Error() + http.StatusText(422)))
 	}
-
-	book.Update(params)
 }
 
 func render(w http.ResponseWriter, v interface{}, err error) {
