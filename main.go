@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/mberrueta/go_api_prometheus_poc/controllers"
 
@@ -42,7 +43,28 @@ func someFunc(w http.ResponseWriter, req *http.Request) {
 // 	}
 // }
 
+var (
+	bindAddress     = os.Getenv("BIND_ADDRESS")
+	httpPort        = os.Getenv("HTTP_PORT")
+	tlsDirectory    = os.Getenv("TLS_DIRECTORY")
+	postgresHost    = os.Getenv("POSTGRES_HOST")
+	postgresPort    = os.Getenv("POSTGRES_PORT")
+	postgresDB      = os.Getenv("POSTGRES_DB")
+	postgresUser    = os.Getenv("POSTGRES_USER")
+	postgresPass    = os.Getenv("POSTGRES_PASS")
+	postgresSSLMode = os.Getenv("POSTGRES_SSL_MODE")
+)
+
 func main() {
+	if bindAddress == "" {
+		bindAddress = ":50060"
+	}
+	if httpPort == "" {
+		httpPort = ":8080"
+	}
+	// if postgresHost == "" {
+	// 	log.Fatal("no postgres host specified, set POSTGRES_HOST env")
+	// }
 	// Init the mux router
 	r := mux.NewRouter()
 
@@ -54,5 +76,5 @@ func main() {
 	r.HandleFunc("/api/books/{id}", controllers.BooksShow).Methods("GET")
 	r.HandleFunc("/api/books/{id}", controllers.BooksDelete).Methods("DELETE")
 
-	log.Fatal(http.ListenAndServe(":8080", r))
+	log.Fatal(http.ListenAndServe(httpPort, r))
 }
